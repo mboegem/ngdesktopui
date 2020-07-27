@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: ngdesktopui
+Bundle-Name: NGDesktop UI
+Bundle-Version: 1.0
+Package-Type: Web-Service
+
+Name: ngdesktopui/ngdesktopui.spec
+Web-Service: True
+
