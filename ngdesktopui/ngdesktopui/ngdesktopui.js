@@ -16,7 +16,7 @@ angular.module('ngdesktopui',['servoy'])
 	if (remote) {
 		var mainMenuTemplate = [];
 		isMacOS = (os.platform() === 'darwin');
-		function addMenu(menuName, callback) {
+		function addMenu(menuName) {
 			if (isMacDefaultMenu) {
 				mainMenuTemplate = [];
 				isMacDefaultMenu = false;
@@ -24,32 +24,20 @@ angular.module('ngdesktopui',['servoy'])
 			var myMenu = {
 				label: menuName,
 				submenu: []
-			}		
-			if (callback != null) {
-				myMenu.click = function() {
-					$window.executeInlineScript(callback.formname, callback.script, [menuName, menuitem.label]);
-				}
 			}
 			mainMenuTemplate.push(myMenu)
 			return mainMenuTemplate;
 		}
-		function insertMenu(index, menuName, callback) {
+		function insertMenu(index, menuName) {
 			if (Number.isInteger(index)) {
 				if (isMacDefaultMenu) {
-					if (isMacDefaultMenu) {
-						mainMenuTemplate = [];
-						isMacDefaultMenu = false;
-					}
+					mainMenuTemplate = [];
+					isMacDefaultMenu = false;
 				}
 				var myMenu = {
 					label: menuName,
 					submenu: []
 				}		
-				if (callback != null) {
-					myMenu.click = function() {
-						$window.executeInlineScript(callback.formname, callback.script, [menuName, menuitem.label]);
-					}
-				}
 				mainMenuTemplate.splice(index, 0, myMenu);
 			}
 			return mainMenuTemplate;
@@ -58,6 +46,7 @@ angular.module('ngdesktopui',['servoy'])
 			for (var index = 0; index < mainMenuTemplate.length; index++) {
 				if (mainMenuTemplate[index].label == menuName) {
 					mainMenuTemplate.splice(index,1);
+					break;
 				}
 			}
 			return mainMenuTemplate;
@@ -79,44 +68,45 @@ angular.module('ngdesktopui',['servoy'])
 			return mainMenuTemplate;
 		}
 		function addMenuItem(menuName, menuitem, callback) {
-			if (isMacDefaultMenu) {
-				return; //addMenu() need to be called prior to this
-			}
-			for (var index = 0; index < mainMenuTemplate.length; index++) {
-				if (mainMenuTemplate[index].label == menuName) {
-					var myItem = {
-						label: menuitem.label,
-						type: menuitem.type,
-						role: menuitem.role,
-					};
-					if (menuitem.type != "separator" && callback != null) {
-						myItem.click = function() {
-							$window.executeInlineScript(callback.formname, callback.script, [menuName, menuitem.label]);
+			if (!isMacDefaultMenu) {
+				for (var index = 0; index < mainMenuTemplate.length; index++) {
+					if (mainMenuTemplate[index].label == menuName) {
+						var myItem = {
+							label: menuitem.label,
+							type: menuitem.type,
+							role: menuitem.role
+						};
+						if (menuitem.type != "separator" && menuitem.callback != null) {
+							myItem.click = function() {
+								$window.executeInlineScript(menuitem.callback.formname, menuitem.callback.script, [menuName, menuitem.label]);
+							}
 						}
+						mainMenuTemplate[index].submenu = mainMenuTemplate[index].submenu.concat([myItem]);
+						break;
 					}
-					mainMenuTemplate[index].submenu = mainMenuTemplate[index].submenu.concat([myItem]);
-					return mainMenuTemplate;
 				}
 			}
 			return mainMenuTemplate;
 		}
 		function insertMenuItem(index, menuName, menuitem, callback) {
-			for (var menuIndex = 0; menuIndex < mainMenuTemplate.length; menuIndex++) {
-				if (mainMenuTemplate[menuIndex].label == menuName) {
-					var submenu = mainMenuTemplate[menuIndex].submenu;
-					var myItem = {
-						label: menuitem.label,
-						type: menuitem.type,
-						role: menuitem.role,
-					};
-					if (menuitem.type != "separator" && callback != null) {
-						myItem.click = function() {
-							$window.executeInlineScript(callback.formname, callback.script, [menuName, menuitem.label]);
+			if (!isMacDefaultMenu) {
+				for (var menuIndex = 0; menuIndex < mainMenuTemplate.length; menuIndex++) {
+					if (mainMenuTemplate[menuIndex].label == menuName) {
+						var submenu = mainMenuTemplate[menuIndex].submenu;
+						var myItem = {
+							label: menuitem.label,
+							type: menuitem.type,
+							role: menuitem.role,
+						};
+						if (menuitem.type != "separator" && menuitem.callback != null) {
+							myItem.click = function() {
+								$window.executeInlineScript(menuitem.callback.formname, menuitem.callback.script, [menuName, menuitem.label]);
+							}
 						}
+						submenu.splice(index, 0, myItem);
+						mainMenuTemplate[index].submenu = submenu;
+						break;
 					}
-					submenu.splice(index, 0, myItem);
-					mainMenuTemplate[index].submenu = submenu;
-					return mainMenuTemplate;
 				}
 			}
 			return mainMenuTemplate;
@@ -142,6 +132,7 @@ angular.module('ngdesktopui',['servoy'])
 					var submenu = mainMenuTemplate[menuIndex].submenu;
 						submenu.splice(menuItemIndex, 1);			
 					mainMenuTemplate[menuIndex].submenu = submenu;
+					break;
 				}
 			}
 			return mainMenuTemplate;
@@ -150,6 +141,7 @@ angular.module('ngdesktopui',['servoy'])
 			for (var menuIndex = 0; menuIndex < mainMenuTemplate.length; menuIndex++) {
 				if (mainMenuTemplate[menuIndex].label == menuName) {
 					mainMenuTemplate[menuIndex].submenu = [];
+					break;
 				}
 			}
 			return mainMenuTemplate;

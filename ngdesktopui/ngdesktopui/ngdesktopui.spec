@@ -8,15 +8,13 @@
  	{
  		"addMenu": {
  			"parameters": [
- 				{"name": "menuName", "type": "string"},
- 				{"name": "callback", "type": "function", "optional": true}
+ 				{"name": "menuName", "type": "string"}
  			]
  		},
  		"insertMenu": {
  			"parameters": [
  				{"name": "index", "type": "int"},
- 				{"name": "menuName", "type": "string"},
- 				{"name": "callback", "type": "function", "optional": true}
+ 				{"name": "menuName", "type": "string"}
  			]
  		},
  		"removeMenu": {
@@ -36,16 +34,14 @@
  		"addMenuItem": {
  			"parameters": [
  				{"name": "menuName", "type": "string"},
- 				{"name": "menuItem", "type": "menuitem"},
- 				{"name": "callback", "type": "function", "optional": true}
+ 				{"name": "menuItem", "type": "menuitem"}
  			]
  		},
  		"insertMenuItem": {
  			"parameters": [
  				{"name": "index", "type": "int"},
  				{"name": "menuName", "type": "string"},
- 				{"name": "menuItem", "type": "menuitem"},
- 				{"name": "callback", "type": "function", "optional": true}
+ 				{"name": "menuItem", "type": "menuitem"}
  			]
  		},
  		"removeMenuItem": {
@@ -90,7 +86,8 @@
  		"menuitem": {
  			"label": "string",
  			"type": "string",
- 			"role": "string"
+ 			"role": "string",
+ 			"callback": "function"
   		}
  	}
  	
