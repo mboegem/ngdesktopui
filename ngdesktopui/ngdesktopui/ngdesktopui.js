@@ -67,18 +67,17 @@ angular.module('ngdesktopui',['servoy'])
 			}
 			return mainMenuTemplate;
 		}
-		function addMenuItem(menuName, menuitem, callback) {
+		function addMenuItem(menuName, menuitemName, callback) {
 			if (!isMacDefaultMenu) {
 				for (var index = 0; index < mainMenuTemplate.length; index++) {
 					if (mainMenuTemplate[index].label == menuName) {
 						var myItem = {
-							label: menuitem.label,
-							type: menuitem.type,
-							role: menuitem.role
+							label: menuitemName,
+							type: "normal"
 						};
-						if (menuitem.type != "separator" && menuitem.callback != null) {
-							myItem.click = function() {
-								$window.executeInlineScript(menuitem.callback.formname, menuitem.callback.script, [menuName, menuitem.label]);
+						if (callback != null) {
+							myItem.click = function(clickedItem, browserWindow, event) {
+								$window.executeInlineScript(callback.formname, callback.script, [menuName, clickedItem.label, clickedItem.type, clickedItem.checked]);
 							}
 						}
 						mainMenuTemplate[index].submenu = mainMenuTemplate[index].submenu.concat([myItem]);
@@ -88,23 +87,22 @@ angular.module('ngdesktopui',['servoy'])
 			}
 			return mainMenuTemplate;
 		}
-		function insertMenuItem(index, menuName, menuitem, callback) {
+		function insertMenuItem(index, menuName, menuitemName, callback) {
 			if (!isMacDefaultMenu) {
 				for (var menuIndex = 0; menuIndex < mainMenuTemplate.length; menuIndex++) {
 					if (mainMenuTemplate[menuIndex].label == menuName) {
 						var submenu = mainMenuTemplate[menuIndex].submenu;
 						var myItem = {
-							label: menuitem.label,
-							type: menuitem.type,
-							role: menuitem.role,
+							label: menuitemName,
+							type: "normal"
 						};
-						if (menuitem.type != "separator" && menuitem.callback != null) {
-							myItem.click = function() {
-								$window.executeInlineScript(menuitem.callback.formname, menuitem.callback.script, [menuName, menuitem.label]);
+						if (callback != null) {
+							myItem.click = function(clickedItem, browserWindow, event) {
+								$window.executeInlineScript(callback.formname, callback.script, [menuName, clickedItem.label, clickedItem.type, clickedItem.checked]);
 							}
 						}
 						submenu.splice(index, 0, myItem);
-						mainMenuTemplate[index].submenu = submenu;
+						mainMenuTemplate[menuIndex].submenu = submenu;
 						break;
 					}
 				}
@@ -146,12 +144,142 @@ angular.module('ngdesktopui',['servoy'])
 			}
 			return mainMenuTemplate;
 		}
+		function addCheckBox(menuName, checkboxName, checked, callback) {
+			if (!isMacDefaultMenu) {
+				for (var index = 0; index < mainMenuTemplate.length; index++) {
+					if (mainMenuTemplate[index].label == menuName) {
+						var myItem = {
+							label: checkboxName,
+							type: "checkbox"
+						};
+						myItem.checked = false;
+						if (checked === true) {
+							myItem.checked = checked
+						}
+						if (callback != null) {
+							myItem.click = function(clickedItem, browserWindow, event) {
+								$window.executeInlineScript(callback.formname, callback.script, [menuName, clickedItem.label, clickedItem.type, clickedItem.checked]);
+							}
+						}
+						mainMenuTemplate[index].submenu = mainMenuTemplate[index].submenu.concat([myItem]);
+						break;
+					}
+				}
+			}
+			return mainMenuTemplate;
+		}
+		function addRadioButton(menuName, radioName, selected, callback) {
+			if (!isMacDefaultMenu) {
+				for (var index = 0; index < mainMenuTemplate.length; index++) {
+					if (mainMenuTemplate[index].label == menuName) {
+						var myItem = {
+							label: radioName,
+							type: "radio"
+						};
+						myItem.checked = false;
+						if (selected === true) {
+							myItem.checked = true
+						}
+						if (callback != null) {
+							myItem.click = function(clickedItem, browserWindow, event) {
+								$window.executeInlineScript(callback.formname, callback.script, [menuName, clickedItem.label, clickedItem.type, clickedItem.checked]);
+							}
+						}
+						mainMenuTemplate[index].submenu = mainMenuTemplate[index].submenu.concat([myItem]);
+						break;
+					}
+				}
+			}
+			return mainMenuTemplate;
+		}
+		function insertCheckBox(index, menuName, checkboxName, checked, callback) {
+			if (!isMacDefaultMenu) {
+				for (var menuIndex = 0; menuIndex < mainMenuTemplate.length; menuIndex++) {
+					if (mainMenuTemplate[menuIndex].label == menuName) {
+						var submenu = mainMenuTemplate[menuIndex].submenu;
+						var myItem = {
+							label: checkboxName,
+							type: "checkbox"
+						};
+						myItem.checked = false;
+						if (checked === true) {
+							myItem.checked = true
+						}
+						if (callback != null) {
+							myItem.click = function(clickedItem, browserWindow, event) {
+								$window.executeInlineScript(callback.formname, callback.script, [menuName, clickedItem.label, clickedItem.type, clickedItem.checked]);
+							}
+						}
+						submenu.splice(index, 0, myItem);
+						mainMenuTemplate[menuIndex].submenu = submenu;
+						break;
+					}
+				}
+			}
+			return mainMenuTemplate;
+		}
+		function insertRadioButton(index, menuName, radioName, selected, callback) {
+			if (!isMacDefaultMenu) {
+				for (var menuIndex = 0; menuIndex < mainMenuTemplate.length; menuIndex++) {
+					if (mainMenuTemplate[menuIndex].label == menuName) {
+						var submenu = mainMenuTemplate[menuIndex].submenu;
+						var myItem = {
+							label: radioName,
+							type: "radio"
+						};
+						myItem.checked = false;
+						if (selected === true) {
+							myItem.checked = true
+						}
+						if (callback != null) {
+							myItem.click = function(clickedItem, browserWindow, event) {
+								$window.executeInlineScript(callback.formname, callback.script, [menuName, clickedItem.label, clickedItem.type, clickedItem.checked]);
+							}
+						}
+						submenu.splice(index, 0, myItem);
+						mainMenuTemplate[menuIndex].submenu = submenu;
+						break;
+					}
+				}
+			}
+			return mainMenuTemplate;
+		}
+		function addSeparator(menuName) {
+			if (!isMacDefaultMenu) {
+				for (var index = 0; index < mainMenuTemplate.length; index++) {
+					if (mainMenuTemplate[index].label == menuName) {
+						var myItem = {
+							type: "separator"
+						};
+						mainMenuTemplate[index].submenu = mainMenuTemplate[index].submenu.concat([myItem]);
+						break;
+					}
+				}
+			}
+			return mainMenuTemplate;
+		}
+		function insertSeparator(index, menuName) {
+			if (!isMacDefaultMenu) {
+				for (var menuIndex = 0; menuIndex < mainMenuTemplate.length; menuIndex++) {
+					if (mainMenuTemplate[menuIndex].label == menuName) {
+						var submenu = mainMenuTemplate[menuIndex].submenu;
+						var myItem = {
+							type: "separator"
+						};
+						submenu.splice(index, 0, myItem);
+						mainMenuTemplate[menuIndex].submenu = submenu;
+						break;
+					}
+				}
+			}
+			return mainMenuTemplate;
+		}
 		return {
-			addMenu: function(menuName, callback) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenu(menuName, callback)));
+			addMenu: function(menuName) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenu(menuName)));
 			},
 			insertMenu: function(index, menuName, callback) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(insertMenu(index, menuName, callback)));
+				Menu.setApplicationMenu(Menu.buildFromTemplate(insertMenu(index, menuName)));
 			},
 			removeMenu: function(menuName) {
 				Menu.setApplicationMenu(Menu.buildFromTemplate(removeMenu(menuName)));
@@ -170,6 +298,13 @@ angular.module('ngdesktopui',['servoy'])
 				}
 				return retVal;
 			},
+			getMenuNameByIndex: function(index) {
+				var menu = Menu.getApplicationMenu();
+				if (index >= 0 && index < menu.items.length) {
+					return menu.items[index].label
+				}
+				return null;
+			},
 			getMenuCount: function() {
 				var menu = Menu.getApplicationMenu();
 				if (menu == null) {
@@ -177,31 +312,17 @@ angular.module('ngdesktopui',['servoy'])
 				}
 				return menu.items.length;
 			},
-			addMenuItem: function(menuName, menuitem, callback) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(menuName, menuitem, callback)));
+			addMenuItem: function(menuName, menuitemName, callback) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(menuName, menuitemName, callback)));
 			},
-			insertMenuItem: function(index, menuName, menuitem, callback) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(insertMenuItem(index, menuName, menuitem, callback)));
+			insertMenuItem: function(index, menuName, menuitemName, callback) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(insertMenuItem(index, menuName, menuitemName, callback)));
 			},
 			removeMenuItem: function(menuName, menuItemName) {
 				Menu.setApplicationMenu(Menu.buildFromTemplate(removeMenuItem(menuName, menuItemName)));
 			},
 			removeMenuItemByIndex: function(menuName, menuItemIndex) {
 				Menu.setApplicationMenu(Menu.buildFromTemplate(removeMenuItemByIndex(menuName, menuItemIndex)));
-			},
-			getMenuItemIndexByName: function(menuName, menuItemName) {
-				var menu = Menu.getApplicationMenu().items;
-				for (var index = 0; index < menu.length; index++) {
-					if (menu[index].label == menuName) {
-						var items = menu[index].submenu.items;
-						for (itemIndex = 0; itemIndex < items.length; itemIndex++) {
-							if (menuItemName == items[itemIndex].label) {
-								return itemIndex;
-							}
-						}
-					}
-				}
-				return -1;
 			},
 			getMenuItemsCount: function(menuName) {
 				var menu = Menu.getApplicationMenu().items;
@@ -220,6 +341,24 @@ angular.module('ngdesktopui',['servoy'])
 			},
 			setMenuBarVisibility: function(visible) {
 				remote.getCurrentWindow().setMenuBarVisibility(visible); //Windows, Linux
+			},
+			addCheckBox: function(menuName, checkboxName, checked, callback) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addCheckBox(menuName, checkboxName, checked, callback)));
+			},
+			addRadioButton: function(menuName, radioName, selected, callback) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addRadioButton(menuName, radioName, selected, callback)));
+			},
+			insertCheckBox: function(index, menuName, checkboxName, checked, callback) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(insertCheckBox(index, menuName, checkboxName, checked, callback)));
+			},
+			insertRadioButton: function(index, menuName, radioName, selected, callback) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(insertRadioButton(index, menuName, radioName, selected, callback)));
+			},
+			addSeparator: function(menuName) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addSeparator(menuName)));
+			},
+			insertSeparator: function(index, menuName) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(insertSeparator(index, menuName)));
 			}
 		}
 	}
@@ -229,16 +368,22 @@ angular.module('ngdesktopui',['servoy'])
 			insertMenu: function() {console.log("not in ngdesktop");},
 			removeMenu: function() {console.log("not in ngdesktop");},
 			getMenuIndexByName: function() {console.log("not in ngdesktop");},
+			getMenuNameByIndex: function() {console.log("not in ngdesktop");},
 			getMenuCount: function() {console.log("not in ngdesktop");},
 			addMenuItem: function() {console.log("not in ngdesktop");},
 			insertMenuItem: function() {console.log("not in ngdesktop");},
 			removeMenuItem: function() {console.log("not in ngdesktop");},
 			removeMenuItemByIndex: function() {console.log("not in ngdesktop");},
-			getMenuItemIndexByName: function() {console.log("not in ngdesktop");},
 			getMenuItemsCount: function() {console.log("not in ngdesktop");},
 			removeAllMenuItems: function() {console.log("not in ngdesktop");},
 			removeAllMenus: function() {console.log("not in ngdesktop");},
-			setMenuBarVisibility: function() {console.log("not in ngdesktop");}
+			setMenuBarVisibility: function() {console.log("not in ngdesktop");},
+			addCheckBox: function() {console.log("not in ngdesktop");},
+			addRadioButton: function() {console.log("not in ngdesktop");},
+			insertCheckBox: function() {console.log("not in ngdesktop");},
+			insertRadioButton: function() {console.log("not in ngdesktop");},
+			addSeparator: function() {console.log("not in ngdesktop");},
+			insertSeparator: function() {console.log("not in ngdesktop");}
 		}
 	}
 })

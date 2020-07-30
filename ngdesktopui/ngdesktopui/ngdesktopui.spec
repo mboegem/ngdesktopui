@@ -28,20 +28,39 @@
  			],
  			"returns": "int"
  		},
+ 		"getMenuNameByIndex": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"}
+ 			],
+ 			"returns": "string"
+ 		},
  		"getMenuCount": {
  			"returns": "int"
+ 		},
+ 		"addSeparator": {
+ 			"parameters": [
+ 				{"name": "menuName", "type": "string"}
+ 			]
+ 		},
+ 		"insertSeparator": {
+ 			"parameters": [
+ 				{"name": "index", "type": "string"},
+ 				{"name": "menuName", "type": "string"}
+ 			]
  		},
  		"addMenuItem": {
  			"parameters": [
  				{"name": "menuName", "type": "string"},
- 				{"name": "menuItem", "type": "menuitem"}
+ 				{"name": "menuItem", "type": "string"},
+ 				{"name": "callback", "type": "function", "optional": true }
  			]
  		},
  		"insertMenuItem": {
  			"parameters": [
  				{"name": "index", "type": "int"},
  				{"name": "menuName", "type": "string"},
- 				{"name": "menuItem", "type": "menuitem"}
+ 				{"name": "menuItem", "type": "string"},
+ 				{"name": "callback", "type": "function", "optional": true }
  			]
  		},
  		"removeMenuItem": {
@@ -55,13 +74,6 @@
  				{"name": "menuName", "type": "string"},
  				{"name": "menuItemIndex", "type": "int"}
  			]
- 		},
- 		"getMenuItemIndexByName": {
- 			"parameters": [
- 				{"name": "menuName", "type": "string"},
- 				{"name": "menuItemName", "type": "string"}
- 			],
- 			"returns": "int"
  		},
  		"getMenuItemsCount": {
  			"parameters": [
@@ -80,15 +92,40 @@
  			"parameters": [
  				{"name": "visible", "type": "boolean"}
  			]
- 		}				
- 	},
- 	"types": {
- 		"menuitem": {
- 			"label": "string",
- 			"type": "string",
- 			"role": "string",
- 			"callback": "function"
-  		}
+ 		},
+ 		"addCheckBox": {
+ 			"parameters": [
+ 				{"name": "menuName", "type": "string"},
+ 				{"name": "checkboxName", "type": "string"},
+ 				{"name": "checked", "type": "boolean"},
+ 				{"name": "callback", "type": "function", "optional": true } 				
+ 			]
+ 		},
+ 		"addRadioButton": {
+ 			"parameters": [
+ 				{"name": "menuName", "type": "string"},
+ 				{"name": "radioName", "type": "string"},
+ 				{"name": "select", "type": "boolean"},
+ 				{"name": "callback", "type": "function", "optional": true }
+ 			]
+ 		},
+ 		"insertCheckBox": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "menuName", "type": "string"},
+ 				{"name": "checkboxName", "type": "string"},
+ 				{"name": "checked", "type": "boolean"},
+ 				{"name": "callback", "type": "function", "optional": true }
+ 			]
+ 		},
+ 		"insertRadioButton": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "menuName", "type": "string"},
+ 				{"name": "radioName", "type": "string"},
+ 				{"name": "select", "type": "boolean"},
+ 				{"name": "callback", "type": "function", "optional": true }
+ 			]
+ 		}		
  	}
- 	
-}
+ }
