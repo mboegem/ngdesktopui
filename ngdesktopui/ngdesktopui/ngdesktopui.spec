@@ -71,8 +71,8 @@
  		},
  		"removeMenuItemByIndex": {
  			"parameters": [
- 				{"name": "menuName", "type": "string"},
- 				{"name": "menuItemIndex", "type": "int"}
+ 			{"name": "menuItemIndex", "type": "int"},
+ 				{"name": "menuName", "type": "string"}
  			]
  		},
  		"getMenuItemsCount": {
