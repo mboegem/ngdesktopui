@@ -354,7 +354,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * plugins.ngdesktopui.addMenu("Help)";
 			 * 
 			 * ... 
-			 * //get the index
+			 * //get menu name
 			 * var menuName = plugins.ngdesktopui.getMenuNameByIndex(1);
 			 * 
 			 * @param int - the zero based index to query for menu the name.
@@ -375,7 +375,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * plugins.ngdesktopui.addMenu("Help)";
 			 * 
 			 * ... 
-			 * //get the index
+			 * //count menus
 			 * var menuCount = plugins.ngdesktopui.getMenuCount();
 			 */
 			getMenuCount: function() {
@@ -394,7 +394,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * plugins.ngdesktopui.addMenu("Help)";
 			 * 
 			 * ... 
-			 * //get the index
+			 * //add items
 			 * plugins.ngdesktopui.addMenuItem("Edit", "Cut", cutCallback);
 			 * plugins.ngdesktopui.addMenuItem("Edit", "Copy", copyCallback);
 			 * plugins.ngdesktopui.addMenuItem("Edit", "Paste", pasteCallback);
@@ -419,7 +419,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * plugins.ngdesktopui.addMenu("Help)";
 			 * 
 			 * ... 
-			 * //get the index
+			 * //add items
 			 * plugins.ngdesktopui.addMenuItem("Edit", "Cut", cutCallback);
 			 * plugins.ngdesktopui.addMenuItem("Edit", "Copy", copyCallback);
 			 * plugins.ngdesktopui.addMenuItem("Edit", "Paste", pasteCallback);
@@ -503,7 +503,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * 
 			 * @params menuName
 			 * @params checkboxName, 
-			 * @params checked - where the checkbox is initially checked
+			 * @params checked - true, false: initial checkbox state
 			 * @params callback - callback function to call when this menuitem is selected.
 			 *                   The callback function will receive:
 			 *                       - menuName, 
@@ -519,7 +519,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * 
 			 * @params menuName
 			 * @params radio button name, 
-			 * @params checked - where the radio button is initially selected
+			 * @params checked - true, false: selection state
 			 * @params callback - callback function to call when this radi button is selected.
 			 *                   The callback function will receive:
 			 *                       - menuName, 
@@ -535,7 +535,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * @params index
 			 * @params menuName
 			 * @params checkboxName, 
-			 * @params checked - where the checkbox is initially checked
+			 * @params checked - true, false: initial checkbox state
 			 * @params callback - callback function to call when this menuitem is selected.
 			 *                   The callback function will receive:
 			 *                       - menuName, 
@@ -551,7 +551,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * 
 			 * @params menuName
 			 * @params radio button name, 
-			 * @params checked - where the radio button is initially selected
+			 * @params checked - true, false: selection state
 			 * @params callback - callback function to call when this radi button is selected.
 			 *                   The callback function will receive:
 			 *                       - menuName, 
