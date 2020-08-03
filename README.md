@@ -7,7 +7,7 @@ To use the latest source code clone the git repository and checkout the master b
 
 Documentation
 -------------
-See the [Wiki](https://github.com/Servoy/ngdesktopui/wiki) for the available documentation.
+See the [Wiki](https://github.com/Servoy/ngdesktopui/wiki/NGDesktop-ui-plugin) for the available documentation.
 
 
 Feature Requests & Bugs
