@@ -8,27 +8,22 @@
  	{
  		"addMenu": {
  			"parameters": [
- 				{"name": "menuName", "type": "string"}
- 			]
- 		},
- 		"insertMenu": {
- 			"parameters": [
- 				{"name": "index", "type": "int"},
- 				{"name": "menuName", "type": "string"}
+ 				{"name": "text", "type": "string"},
+ 				{"name": "index", "type": "int", "optional": true}			
  			]
  		},
  		"removeMenu": {
  			"parameters": [
- 				{"name": "menuName", "type": "string"}
+ 				{"name": "index", "type": "int"}
  			]
  		},
- 		"getMenuIndexByName": {
+ 		"getMenuIndexByText": {
  			"parameters": [
- 				{"name": "menuName", "type": "string"}
+ 				{"name": "text", "type": "string"}
  			],
  			"returns": "int"
  		},
- 		"getMenuNameByIndex": {
+ 		"getMenuText": {
  			"parameters": [
  				{"name": "index", "type": "int"}
  			],
@@ -37,95 +32,89 @@
  		"getMenuCount": {
  			"returns": "int"
  		},
- 		"addSeparator": {
- 			"parameters": [
- 				{"name": "menuName", "type": "string"}
- 			]
- 		},
- 		"insertSeparator": {
- 			"parameters": [
- 				{"name": "index", "type": "string"},
- 				{"name": "menuName", "type": "string"}
- 			]
- 		},
- 		"addMenuItem": {
- 			"parameters": [
- 				{"name": "menuName", "type": "string"},
- 				{"name": "menuItem", "type": "string"},
- 				{"name": "callback", "type": "function", "optional": true }
- 			]
- 		},
- 		"insertMenuItem": {
- 			"parameters": [
- 				{"name": "index", "type": "int"},
- 				{"name": "menuName", "type": "string"},
- 				{"name": "menuItem", "type": "string"},
- 				{"name": "callback", "type": "function", "optional": true }
- 			]
- 		},
- 		"removeMenuItem": {
- 			"parameters": [
- 				{"name": "menuName", "type": "string"},
- 				{"name": "menuItemName", "type": "string"}
- 			]
- 		},
- 		"removeMenuItemByIndex": {
- 			"parameters": [
- 			{"name": "menuItemIndex", "type": "int"},
- 				{"name": "menuName", "type": "string"}
- 			]
- 		},
- 		"getMenuItemsCount": {
- 			"parameters": [
- 				{"name": "menuName", "type": "string"}
- 			],
- 			"returns": "int"
- 		},	
- 		"removeAllMenuItems": {
- 			"parameters": [
- 				{"name": "menuName", "type": "string"}
- 			],
- 			"returns": "boolean"
- 		},
  		"removeAllMenus": {},
  		"setMenuBarVisibility": {
  			"parameters": [
  				{"name": "visible", "type": "boolean"}
  			]
  		},
+ 		"removeAllMenuItems": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "itemIndex", "type": "int", "optional": true}
+ 			]
+ 		},
+ 		"addSeparator": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "position", "type": "int", "optional": true},
+ 				{"name": "itemIndex", "type": "int", "optional": true}
+ 			]
+ 		},
+ 		"addMenuItem": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "text", "type": "string"},
+ 				{"name": "callback", "type": "function"},
+ 				{"name": "position", "type": "int", "optional": true},			
+ 				{"name": "itemIndex", "type": "int", "optional": true}			
+ 			]
+ 		},
+ 		"removeMenuItem": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "position", "type": "int"},
+ 				{"name": "itemIndex", "type": "int", "optional": true}
+ 			]
+ 		},
+ 		"getMenuItemIndexByText": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "text", "type": "string"}
+ 			],
+ 			"returns": "int"
+ 		},	
+ 		"getMenuItemText": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "itemIndex", "type": "int"}
+ 			],
+ 			"returns": "string"
+ 		},	
+ 		"getMenuItemsCount": {
+ 			"parameters": [
+ 				{"name": "index", "type": "int"},
+ 				{"name": "itemIndex", "type": "int", "optional": true}
+ 			],
+ 			"returns": "int"
+ 		},	
  		"addCheckBox": {
  			"parameters": [
- 				{"name": "menuName", "type": "string"},
- 				{"name": "checkboxName", "type": "string"},
- 				{"name": "checked", "type": "boolean"},
- 				{"name": "callback", "type": "function", "optional": true } 				
+ 				{"name": "index", "type": "int"},
+ 				{"name": "text", "type": "string"},
+ 				{"name": "callback", "type": "function"},
+ 				{"name": "checked", "type": "boolean", "optional": true},
+ 				{"name": "position", "type": "int", "optional": true},
+ 				{"name": "itemIndex", "type": "int", "optional": true} 				
  			]
  		},
  		"addRadioButton": {
  			"parameters": [
- 				{"name": "menuName", "type": "string"},
- 				{"name": "radioName", "type": "string"},
- 				{"name": "select", "type": "boolean"},
- 				{"name": "callback", "type": "function", "optional": true }
+ 				{"name": "index", "type": "int"},
+ 				{"name": "text", "type": "string"},
+ 				{"name": "callback", "type": "function"},
+ 				{"name": "selected", "type": "boolean", "optional": true},			
+ 				{"name": "position", "type": "int", "optional": true},
+ 				{"name": "itemIndex", "type": "int", "optional": true}
  			]
  		},
- 		"insertCheckBox": {
+ 		"addRoleItem": {
  			"parameters": [
  				{"name": "index", "type": "int"},
- 				{"name": "menuName", "type": "string"},
- 				{"name": "checkboxName", "type": "string"},
- 				{"name": "checked", "type": "boolean"},
- 				{"name": "callback", "type": "function", "optional": true }
+ 				{"name": "role", "type": "string"},			
+ 				{"name": "position", "type": "int", "optional": true},	
+ 				{"name": "itemIndex", "type": "int", "optional": true}
  			]
- 		},
- 		"insertRadioButton": {
- 			"parameters": [
- 				{"name": "index", "type": "int"},
- 				{"name": "menuName", "type": "string"},
- 				{"name": "radioName", "type": "string"},
- 				{"name": "select", "type": "boolean"},
- 				{"name": "callback", "type": "function", "optional": true }
- 			]
- 		}		
+ 		}	
  	}
  }
