@@ -16,6 +16,7 @@ angular.module('ngdesktopui',['servoy'])
 	if (remote) {
 		var mainMenuTemplate = [];
 		isMacOS = (os.platform() === 'darwin');
+		var addResultIndex = -1;
 		function clearMenu() {
 			if (isMacOS) {
 				mainMenuTemplate = [
@@ -33,6 +34,7 @@ angular.module('ngdesktopui',['servoy'])
 			return mainMenuTemplate;
 		}
 		function addMenu(text, index) {
+			addResultIndex = -1;
 			if (isMacDefaultMenu) {
 				mainMenuTemplate = [];
 				isMacDefaultMenu = false;
@@ -43,8 +45,10 @@ angular.module('ngdesktopui',['servoy'])
 			}
 			if (Number.isInteger(index)) {
 				mainMenuTemplate.splice(index, 0, myMenu);
+				addResultIndex = index;
 			} else {
 				mainMenuTemplate.push(myMenu)
+				addResultIndex = mainMenuTemplate.length - 1;
 			}
 			return mainMenuTemplate;
 		}
@@ -62,6 +66,7 @@ angular.module('ngdesktopui',['servoy'])
 				if (Number.isInteger(itemIndex)) {//submenu wanted
 					if (itemIndex >=0 && itemIndex < mainMenuTemplate[menuIndex].submenu.length) {
 						mainMenuTemplate[menuIndex].submenu[itemIndex].submenu = [];
+						mainMenuTemplate[menuIndex].submenu[itemIndex].type = "normal";
 					}
 				} else {//
 					mainMenuTemplate[menuIndex].submenu = [];
@@ -94,7 +99,8 @@ angular.module('ngdesktopui',['servoy'])
 			}
 			return mainMenuTemplate;
 		}
-		function addMenuItem(menuIndex, text, checked, callback, position, itemIndex, type) {
+		function addMenuItem(menuIndex, text, role, checked, callback, position, itemIndex, type) {
+			addResultIndex = -1;
 			if (Number.isInteger(menuIndex) && (menuIndex >=0 && menuIndex < mainMenuTemplate.length)) {
 				var submenu = mainMenuTemplate[menuIndex].submenu;
 				var isSubmenu = false;
@@ -104,7 +110,10 @@ angular.module('ngdesktopui',['servoy'])
 				}
 				var myItem = {};
 				if (type === "role") {
-					myItem.role = text;
+					if (text != null) {
+						myItem.label = text;
+					}
+					myItem.role = role;
 				} else {
 					if (text != null) {
 						myItem.label = text;
@@ -124,11 +133,14 @@ angular.module('ngdesktopui',['servoy'])
 				if (Number.isInteger(position)) {
 					if (submenu === undefined) {
 						submenu = [].concat(myItem);
+						addResultIndex = 0;
 					} else {
 						if (position < submenu.length) {
 							submenu.splice(position, 0, myItem);
+							addResultIndex = position;
 						} else {
 							submenu = submenu.concat(myItem);
+							addResultIndex = submenu.length - 1;
 						}
 					}
 					
@@ -141,28 +153,11 @@ angular.module('ngdesktopui',['servoy'])
 				} else {
 					if (isSubmenu) {
 						mainMenuTemplate[menuIndex].submenu[itemIndex].submenu = submenu.concat([myItem]);
+						addResultIndex = mainMenuTemplate[menuIndex].submenu[itemIndex].submenu.length - 1;
 					} else {
 						mainMenuTemplate[menuIndex].submenu = submenu.concat([myItem]);
+						addResultIndex = mainMenuTemplate[menuIndex].submenu.length - 1;
 					}
-				}
-			}
-			return mainMenuTemplate;
-		}
-		function setMenuItemRole(menuIndex, position, itemIndex, role) {
-			if (Number.isInteger(menuIndex) && (menuIndex >=0 && menuIndex < mainMenuTemplate.length)) {
-				var submenu = mainMenuTemplate[menuIndex].submenu;
-				var isSubmenu = false;
-				if (Number.isInteger(itemIndex) && (itemIndex >=0 && itemIndex < mainMenuTemplate[menuIndex].submenu.length)) {
-					submenu = submenu[itemIndex].submenu;
-					isSubmenu = true;
-				}
-			}
-			if (Number.isInteger(position) && (position >=0 && position < submenu.length)) {
-				submenu[position].role = role;
-				if (isSubmenu) {
-					mainMenuTemplate[menuIndex].submenu[itemIndex].submenu = submenu;
-				} else {
-					mainMenuTemplate[menuIndex].submenu = submenu;
 				}
 			}
 			return mainMenuTemplate;
@@ -172,10 +167,13 @@ angular.module('ngdesktopui',['servoy'])
 			 * Add specified menu to the menu bar
 			 * 
 			 * @param {string} text - menu text
-			 * @param {int} index - menu insert position (zero based)
+			 * @param {int} [index] - menu insert position (zero based)
+			 * 
+			 * @return {int} - the index of the added menu
 			 */
 			addMenu: function(text, index) {
 				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenu(text, index)));
+				return addResultIndex;
 			},
 			/**
 			 * Delete menu from the specified position from the menu bar
@@ -246,7 +244,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * Cleanup the specified menu
 			 * 
 			 * @param {int} index - menu position
-			 * @param {int} itemIndex (optional) - submenu index
+			 * @param {int} [itemIndex] - submenu index
 			 */
 			removeAllMenuItems: function(index, itemIndex) {
 				Menu.setApplicationMenu(Menu.buildFromTemplate(removeAllMenuItems(index, itemIndex)));
@@ -254,13 +252,16 @@ angular.module('ngdesktopui',['servoy'])
 			/**
 			 * Add separator line to the specified menu
 			 * 
-			 * * 
+			 * 
 			 * @param {int} index - menu index
-			 * @param {int} position (optional) - insert position
-			 * @param {int} itemIndex (optional) - submenu index; when specified the position is relative to this submenu
+			 * @param {int} [position] - insert position
+			 * @param {int} [itemIndex] - submenu index; when specified the position is relative to this submenu
+			 * 
+			 * @return {int} - the index of the added separator
 			 */
 			addSeparator: function(index, position, itemIndex) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, null, null, null, position, itemIndex, "separator")));
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, null, null, null, null, position, itemIndex, "separator")));
+				return addResultIndex;
 			},
 			/**
 			 * Add menu items to existing menu.
@@ -272,21 +273,24 @@ angular.module('ngdesktopui',['servoy'])
 			 *                       - text of the clicked item 
 			 *                       - type of the clicked item ("normal", "radio", "checkbox")
 			 *                       - checked value for checkboxes and radio buttons, otherwise undefined
-			 * @param {int} position (optional)- insert position
-			 * @param {int} itemIndex (optional) - submenu index; when specified the position is relative to this submenu
+			 * @param {int} [position] - insert position
+			 * @param {int} [itemIndex] - submenu index; when specified the position is relative to this submenu
+			 * 
+			 * @return {int} - the index of the added menu item
 			 * 
 			 * Note: when add an item to an existing menuitem, that menuitem will get from type "normal" to type "submenu". 
 			 *       If previously a callback has been set, that callback will no longer be called
 			 */
 			addMenuItem: function(index, text, callback, position, itemIndex) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, text, null, callback, position, itemIndex, "normal")));
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, text, null, null, callback, position, itemIndex, "normal")));
+				return addResultIndex;
 			},
 			/**
 			 * Remove menu item from existing menu.
 			 * 
 			 * @param {int} index - menu index
 			 * @param {int} position - menuitem position to be removed
-			 * @param {int} itemIndex (optional) - submenu index; when specified the position is relative to this submenu
+			 * @param {int} [itemIndex] - submenu index; when specified the position is relative to this submenu
 			 * 
 			 * Note: when the last item from a submenu it is removed that submenu will get from type "submenu" to type "normal". 
 			 *       If previously a callback has been set for the item, that callback will be called further
@@ -298,7 +302,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * Count menu items for the specified menu
 			 * 
 			 * @param {int} index - menu index
-			 * @param (int) itemIndex (optional) - submenu index; when specified the submenu items will be count
+			 * @param (int) [itemIndex] - submenu index; when specified the submenu items will be count
 			 */
 			getMenuItemsCount: function(index, itemIndex) {
 				var items = Menu.getApplicationMenu().items;
@@ -330,15 +334,18 @@ angular.module('ngdesktopui',['servoy'])
 			 *                       - text of the clicked item 
 			 *                       - type of the clicked item ("normal", "radio", "checkbox")
 			 *                       - checked value for checkboxes and radio buttons, otherwise undefined
-			 * @param {boolean} checked (optional) - checkbox initial status (unchecked by defaul)
-			 * @param {int} position (optional)- insert position
-			 * @param {int} itemIndex (optional) - submenu index; when specified the position is relative to this submenu
+			 * @param {boolean} [checked] - checkbox initial status (unchecked by defaul)
+			 * @param {int} [position] - insert position
+			 * @param {int} [itemIndex] - submenu index; when specified the position is relative to this submenu
+			 * 
+			 * @return {int} - the index of the added checkbox
 			 * 
 			 * Note: when add the checkbox to an existing menuitem, that menuitem will get from type "normal" to type "submenu". 
 			 *       If previously a callback has been set, that callback will no longer be called
 			 */
 			addCheckBox: function(index, text, callback, checked, position, itemIndex) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, text, checked, callback, position, itemIndex, "checkbox")));
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, text, null, checked, callback, position, itemIndex, "checkbox")));
+				return addResultIndex;
 			},
 			/**
 			 * Add radio button to the specified menu
@@ -350,26 +357,36 @@ angular.module('ngdesktopui',['servoy'])
 			 *                       - text of the clicked item 
 			 *                       - type of the clicked item ("normal", "radio", "checkbox")
 			 *                       - checked value for checkboxes and radio buttons, otherwise undefined
-			 * @param {boolean} selected (optional) - initial selected status
-			 * @param {int} position (optional)- insert position
-			 * @param {int} itemIndex (optional) - submenu index; when specified the position is relative to this submenu
+			 * @param {boolean} [selected] - initial selected status
+			 * @param {int} [position] - insert position
+			 * @param {int} [itemIndex] - submenu index; when specified the position is relative to this submenu
+			 * 
+			 * @return {int} - the index of the added radio button
 			 * 
 			 * Note: when add the checkbox to an existing menuitem, that menuitem will get from type "normal" to type "submenu". 
 			 *       If previously a callback has been set, that callback will no longer be called
 			 * Note: For the first added radio button in a group, the radio button is selected regardless the selected param
 			 */
 			addRadioButton: function(index, text, callback, selected, position, itemIndex) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, text, selected, callback, position, itemIndex, "radio")));
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, text, null, selected, callback, position, itemIndex, "radio")));
+				return addResultIndex;
 			},
 			/**
-			 * Add a menuitem with standard native system role. For complete value list and explanations go to https://github.com/Servoy/ngdesktopui
+			 * Add a menuitem with standard native system behavior. 
+			 * For complete allowed value list: https://github.com/Servoy/ngdesktopui
 			 * 
 			 * @param {int} index - menu index
 			 * @param {string} role - item role. 
+			 * @param {string} [text] - menuitem text; when not specified the System will provide a standard (localized) one
+			 * @param {int} [position] - insert position
+			 * @param {int} [itemIndex] - submenu index; when specified the position is relative to this submenu
+			 * 
+			 * @return {int} - the index of the added role item
 			 * 
 			 */
-			addRoleItem: function(index, role, position, itemIndex) {
-				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, role, null, null, position, itemIndex, "role")));
+			addRoleItem: function(index, role, text, position, itemIndex) {
+				Menu.setApplicationMenu(Menu.buildFromTemplate(addMenuItem(index, text, role, null, null, position, itemIndex, "role")));
+				return addResultIndex;
 			},
 			/**
 			 * Get menuitem index from the specified menu
@@ -395,7 +412,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * Get menuitem text from the specified menu
 			 * 
 			 * @param {int} index - menu index
-			 * @param {int} itemIndex - menuitem text to query for text
+			 * @param {int} itemIndex - menuitem index to query for text
 			 */
 			getMenuItemText: function(index, itemIndex) {
 				var appMenu = Menu.getApplicationMenu();

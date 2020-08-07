@@ -10,7 +10,8 @@
  			"parameters": [
  				{"name": "text", "type": "string"},
  				{"name": "index", "type": "int", "optional": true}			
- 			]
+ 			],
+ 			"returns": "int"
  		},
  		"removeMenu": {
  			"parameters": [
@@ -49,7 +50,8 @@
  				{"name": "index", "type": "int"},
  				{"name": "position", "type": "int", "optional": true},
  				{"name": "itemIndex", "type": "int", "optional": true}
- 			]
+ 			],
+ 			"returns": "int"
  		},
  		"addMenuItem": {
  			"parameters": [
@@ -58,7 +60,8 @@
  				{"name": "callback", "type": "function"},
  				{"name": "position", "type": "int", "optional": true},			
  				{"name": "itemIndex", "type": "int", "optional": true}			
- 			]
+ 			],
+ 			"returns": "int"
  		},
  		"removeMenuItem": {
  			"parameters": [
@@ -96,7 +99,8 @@
  				{"name": "checked", "type": "boolean", "optional": true},
  				{"name": "position", "type": "int", "optional": true},
  				{"name": "itemIndex", "type": "int", "optional": true} 				
- 			]
+ 			],
+ 			"returns": "int"
  		},
  		"addRadioButton": {
  			"parameters": [
@@ -106,15 +110,18 @@
  				{"name": "selected", "type": "boolean", "optional": true},			
  				{"name": "position", "type": "int", "optional": true},
  				{"name": "itemIndex", "type": "int", "optional": true}
- 			]
+ 			],
+ 			"returns": "int"
  		},
  		"addRoleItem": {
  			"parameters": [
  				{"name": "index", "type": "int"},
- 				{"name": "role", "type": "string"},			
+ 				{"name": "role", "type": "string"},
+ 				{"name": "text", "type": "string", "optional": true},			
  				{"name": "position", "type": "int", "optional": true},	
  				{"name": "itemIndex", "type": "int", "optional": true}
- 			]
+ 			],
+ 			"returns": "int"
  		}	
  	}
  }
