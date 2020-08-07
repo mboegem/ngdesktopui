@@ -164,7 +164,7 @@ angular.module('ngdesktopui',['servoy'])
 		}
 		return {
 			/**
-			 * Add specified menu to the menu bar
+			 * Add new menu to the menu bar
 			 * 
 			 * @param {string} text - menu text
 			 * @param {int} [index] - menu insert position (zero based)
