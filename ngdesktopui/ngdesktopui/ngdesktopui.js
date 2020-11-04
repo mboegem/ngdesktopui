@@ -161,6 +161,13 @@ angular.module('ngdesktopui',['servoy'])
 			}
 			return [mainMenuTemplate, addResultIndex];
 		}
+		function findBrowserView(id) {
+			var views = remote.getCurrentWindow().getBrowserViews();
+			var view = views.find(function(element) {
+				if (element.id === id) return element;
+			});
+			return view;
+		}
 		return {
 			/**
 			 * Add new menu to the menu bar
@@ -428,7 +435,65 @@ angular.module('ngdesktopui',['servoy'])
 					} 
 				}
 				return null;
+			},
+			/**
+			 * Creates a BrowserView (looks like an iframe) and adds this to the current window at the given coordinates with the given width and height.
+			 * It returns and id that can be used to close/clean up this view later on, or to target that view to inject some javascript.
+			 *  
+			 * @param {int} x - the X coordinate to position this view
+			 * @param {int} y - the Y coordinate to position this view
+			 * @param {int} width - the width of this view
+			 * @param {int} height - the height of this view
+			 * @param {string} url - the url to load into this view
+			 * @return {int} the id to target this view later on.
+			 */
+			createBrowserView: function(x,y,width,height,url) {
+
+				var view = new remote.BrowserView();
+				remote.getCurrentWindow().addBrowserView(view);
+				view.setBounds({ x: x, y: y, width: width, height: height });
+				view.webContents.loadURL(url);
+				return view.id;
+			},
+			/**
+			 * Closes a and destroys a previously created BrowserView by the given id.
+			 * 
+			 * @param {int} id - the id of the view to close.
+			 */
+			closeBrowserView: function(id) {
+				var view = findBrowserView(id);
+				if (view){
+					remote.getCurrentWindow().removeBrowserView(view);
+					view.destroy();	
+				}
+			},
+			/**
+			 * Injects the given javascript into the content of the BrowserView of the given id.
+			 * The javascript can be a function declaration that is then called later on.
+			 * The last statement return value is given back to the callback as a first argument.
+			 * If something goes wrong then the callback is called where the first argument is null and a second argument has the message of the exception.
+			 * 
+			 * @sample
+			 * // open google.com<br/>
+			 * var id = plugins.ngdesktopui.createBrowserView(100,200,700,500,"https://www.google.com/");<br/>
+			 * // get the value of the search field and return this.<br/>
+			 * plugins.ngdesktopui.injectJSIntoBrowserView(id, "function test() { return document.getElementsByName('q')[0].value};test();", callback);
+			 * 
+			 * @param {int} id - the id of the view to execute javascript in.
+			 * @param {string} js - the piece of javascript that is injected into this view.
+			 * @param {function} callback - the callback function that is used to get the results or exception if the call fails.
+			 */
+			injectJSIntoBrowserView: function(id, js, callback) {
+				var view = findBrowserView(id);
+				if (view) {
+					view.webContents.executeJavaScript(js).then(function(result) {
+						if (callback) $window.executeInlineScript(callback.formname, callback.script, [result]);
+					}).catch(function(e) {
+						if (callback) $window.executeInlineScript(callback.formname, callback.script, [null, e.message]);
+					})
+				}
 			}
+
 
 		}
 	} else {
@@ -449,7 +514,10 @@ angular.module('ngdesktopui',['servoy'])
 			addRadioButton: function() {console.log("not in ngdesktop");},
 			addRoleItem: function() {console.log("not in ngdesktop");},
 			getMenuItemIndexByText: function() {console.log("not in ngdesktop");},
-			getMenuItemText: function() {console.log("not in ngdesktop");}
+			getMenuItemText: function() {console.log("not in ngdesktop");},
+			createBrowserView: function() {console.log("not in electron");},
+			closeBrowserView: function() {console.log("not in electron");},
+			injectJSIntoBrowserView: function() {console.log("not in electron");}
 		}
 	}
 })

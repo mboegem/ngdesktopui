@@ -122,6 +122,28 @@
  				{"name": "itemIndex", "type": "int", "optional": true}
  			],
  			"returns": "int"
- 		}	
+ 		},
+		"createBrowserView": {
+			"parameters" : [
+				{"name":"x", "type":"int"},
+				{"name":"y", "type":"int"},
+				{"name":"width", "type":"int"},
+				{"name":"height", "type":"int"},
+				{"name":"url", "type":"string"}
+			],
+			"returns":"int"
+		},
+		"closeBrowserView": {
+			"parameters" : [
+				{"name":"id", "type":"int"}
+			]
+		},
+		"injectJSIntoBrowserView": {
+			"parameters" : [
+				{"name":"id", "type":"int"},
+				{"name":"js", "type":"string"},
+				{"name":"callback", "type":"function"}
+			]
+		}	
  	}
  }
