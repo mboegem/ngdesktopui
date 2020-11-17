@@ -4,12 +4,16 @@ angular.module('ngdesktopui',['servoy'])
 	var remote = null;
 	var Menu = null;
 	var os = null;
+	var BrowserWindow = null;
 	var isMacOS = false;
+	var window = null
 	var isMacDefaultMenu = false;
 	
 	if (typeof require == "function") {
 		remote = require('electron').remote;
 		Menu = remote.Menu;
+		BrowserWindow = remote.BrowserWindow;
+		win = remote.getCurrentWindow();
 		os = require('os');
 	}
 
@@ -49,6 +53,30 @@ angular.module('ngdesktopui',['servoy'])
 				mainMenuTemplate.push(myMenu)
 				addResultIndex = mainMenuTemplate.length - 1;
 			}
+			return [mainMenuTemplate, addResultIndex];
+		}
+		function addDevToolsMenu() {
+			var addResultIndex = -1;
+			if (isMacDefaultMenu) {
+				mainMenuTemplate = [];
+				isMacDefaultMenu = false;
+			}
+			var myMenu = {
+				label: "Developer Tools",
+				submenu: [
+					{
+						label: "Open Developer Tools",
+						click: function() {
+							var devTools = new BrowserWindow();
+							win.webContents.setDevToolsWebContents(devTools.webContents);
+							win.webContents.openDevTools({mode: 'detach'});
+						}
+					}
+				]
+			}
+			
+			mainMenuTemplate.push(myMenu)
+			addResultIndex = mainMenuTemplate.length - 1;
 			return [mainMenuTemplate, addResultIndex];
 		}
 		function removeMenu(index) {
@@ -179,6 +207,18 @@ angular.module('ngdesktopui',['servoy'])
 			 */
 			addMenu: function(text, index) {
 				var result = addMenu(text, index);
+				Menu.setApplicationMenu(Menu.buildFromTemplate(result[0]));
+				return result[1];
+			},
+			/**
+			 * Add Developer Tools menu to the menu bar
+			 * This function is adding Developer Tools menu. 
+			 * Use it just for debugging. Remove any call to this function once you're done.  
+			 * 
+			 * @return {int} - the index of the added menu
+			 */
+			addDevToolsMenu: function() {
+				var result = addDevToolsMenu();
 				Menu.setApplicationMenu(Menu.buildFromTemplate(result[0]));
 				return result[1];
 			},
@@ -513,6 +553,7 @@ angular.module('ngdesktopui',['servoy'])
 			addCheckBox: function() {console.log("not in ngdesktop");},
 			addRadioButton: function() {console.log("not in ngdesktop");},
 			addRoleItem: function() {console.log("not in ngdesktop");},
+			addDevToolsItem: function() {console.log("not in ngdesktop")},
 			getMenuItemIndexByText: function() {console.log("not in ngdesktop");},
 			getMenuItemText: function() {console.log("not in ngdesktop");},
 			createBrowserView: function() {console.log("not in electron");},
