@@ -189,13 +189,8 @@ angular.module('ngdesktopui',['servoy'])
 			}
 			return [mainMenuTemplate, addResultIndex];
 		}
-		function findBrowserView(id) {
-			var views = remote.getCurrentWindow().getBrowserViews();
-			var view = views.find(function(element) {
-				if (element.id === id) return element;
-			});
-			return view;
-		}
+		var browserViews = {};
+		var browserViewCounter = 0;
 		return {
 			/**
 			 * Add new menu to the menu bar
@@ -488,12 +483,13 @@ angular.module('ngdesktopui',['servoy'])
 			 * @return {int} the id to target this view later on.
 			 */
 			createBrowserView: function(x,y,width,height,url) {
-
+				var id = browserViewCounter++  + '';
 				var view = new remote.BrowserView();
+				browserViews[id] = view;
 				remote.getCurrentWindow().addBrowserView(view);
 				view.setBounds({ x: x, y: y, width: width, height: height });
 				view.webContents.loadURL(url);
-				return view.id;
+				return id;
 			},
 			/**
 			 * Closes a and destroys a previously created BrowserView by the given id.
@@ -501,10 +497,10 @@ angular.module('ngdesktopui',['servoy'])
 			 * @param {int} id - the id of the view to close.
 			 */
 			closeBrowserView: function(id) {
-				var view = findBrowserView(id);
+				var view = browserViews[id];
 				if (view){
 					remote.getCurrentWindow().removeBrowserView(view);
-					view.destroy();	
+					delete browserViews[id];
 				}
 			},
 			/**
@@ -524,7 +520,7 @@ angular.module('ngdesktopui',['servoy'])
 			 * @param {function} callback - the callback function that is used to get the results or exception if the call fails.
 			 */
 			injectJSIntoBrowserView: function(id, js, callback) {
-				var view = findBrowserView(id);
+				var view = browserViews[id];
 				if (view) {
 					view.webContents.executeJavaScript(js).then(function(result) {
 						if (callback) $window.executeInlineScript(callback.formname, callback.script, [result]);
