@@ -4,6 +4,10 @@
 	"version": 1,
  	"definition": "ngdesktopui/ngdesktopui/ngdesktopui.js",
 	"libraries": [],
+	"ng2Config": {
+       "packageName": "@servoy/ngdesktopui",
+       "serviceName": "NGDesktopUIService"
+    },
  	"api":
  	{
  		"addMenu": {
