@@ -6,7 +6,8 @@
 	"libraries": [],
 	"ng2Config": {
        "packageName": "@servoy/ngdesktopui",
-       "serviceName": "NGDesktopUIService"
+       "serviceName": "NGDesktopUIService",
+       "entryPoint": "dist/servoy/ngdesktopui"
     },
  	"api":
  	{

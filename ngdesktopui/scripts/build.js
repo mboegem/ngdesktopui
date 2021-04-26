@@ -4,6 +4,6 @@ var AdmZip = require('adm-zip');
 var zip = new AdmZip();
 
 zip.addLocalFolder("./META-INF/", "/META-INF/");
-zip.addLocalFolder("./dist/servoy/ngdesktopui/", "/dist/");
+zip.addLocalFolder("./dist/servoy/ngdesktopui/", "/dist/servoy/ngdesktopui/");
 zip.addLocalFolder("./ngdesktopui/", "/ngdesktopui/");
 zip.writeZip("ngdesktopui.zip");
