@@ -2,11 +2,11 @@
   "name": "@servoy/ngdesktopui",
   "version": "2.0.0",
   "peerDependencies": {
-    "@angular/common": "^11.2.9",
-    "@angular/core": "^11.2.9"
+     "@angular/common": ">=12",
+    "@angular/core": ">=12"
   },
   "dependencies": {
-    "tslib": "^2.0.0"
+    "tslib": "*"
   },
   "license": "MIT",
   "repository": {
