@@ -3,9 +3,7 @@ import { LoggerFactory, LoggerService, WindowRefService, ServoyPublicService } f
 
 import * as electron from 'electron';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NGDesktopUIService {
     private log: LoggerService;
     private remote: electron.Remote;
