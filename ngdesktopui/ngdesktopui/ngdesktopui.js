@@ -1,6 +1,7 @@
 angular.module('ngdesktopui',['servoy'])
 .factory("ngdesktopui",function($services, $q, $log, $window) 
 {
+	var electron = null;
 	var remote = null;
 	var Menu = null;
 	var os = null;
@@ -10,6 +11,7 @@ angular.module('ngdesktopui',['servoy'])
 	var isMacDefaultMenu = false;
 	
 	if (typeof require == "function") {
+		electron = require('electron');
 		remote = require('electron').remote;
 		Menu = remote.Menu;
 		BrowserWindow = remote.BrowserWindow;
@@ -528,9 +530,49 @@ angular.module('ngdesktopui',['servoy'])
 						if (callback) $window.executeInlineScript(callback.formname, callback.script, [null, e.message]);
 					})
 				}
+			},
+			/**
+			 * Changes the zoom factor to the specified factor. Zoom factor is zoom percent divided by 100, so 300% = 3.0
+			 * 
+			 * The factor must be greater than 0.0
+			 */
+			setZoomFactor: function(factor) {
+				console.log(typeof factor)
+				if(factor && (typeof factor == 'number') && factor > 0) {
+					electron.webFrame.setZoomFactor(factor);
+				}
+			},
+			/**
+			 * Get the current zoom factor
+			 */
+			getZoomFactor: function() {
+				return electron.webFrame.getZoomFactor();
+			},
+			/**
+			 * Shows and gives focus to the window
+			 */
+			showWindow: function() {
+				win.show();
+			},
+			/**
+			 * Hides the window
+			 */
+			hideWindow: function() {
+				win.hide();
+			},
+			/**
+			 * Maximizes the window
+			 */
+			maximizeWindow: function() {
+				win.maximize();
+			},
+			/**
+			 * Unmaximizes the window
+			 */
+			unmaximizeWindow: function() {
+				win.unmaximize();
 			}
-
-
+			
 		}
 	} else {
 		return {
@@ -554,7 +596,13 @@ angular.module('ngdesktopui',['servoy'])
 			getMenuItemText: function() {console.log("not in ngdesktop");},
 			createBrowserView: function() {console.log("not in electron");},
 			closeBrowserView: function() {console.log("not in electron");},
-			injectJSIntoBrowserView: function() {console.log("not in electron");}
+			injectJSIntoBrowserView: function() {console.log("not in electron");},
+			setZoomFactor: function() {console.log("not in electron");},
+			getZoomFactor: function() {console.log("not in electron");},
+			showWindow: function() {console.log("not in electron");},
+			hideWindow: function() {console.log("not in electron");},
+			maximizeWindow: function() {console.log("not in electron");},
+			unmaximizeWindow: function() {console.log("not in electron");}
 		}
 	}
 })
